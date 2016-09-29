@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from scrapy.spiders import Rule
 from scrapy.linkextractor import LinkExtractor
 from scrapy.loader import ItemLoader
@@ -7,7 +8,7 @@ from web_news.items import SpiderItem
 
 class Chinanews(SpiderRedis):
     name = "chinanews"
-    website = "中国新闻网"
+    website = u"中国新闻网"
     allowed_domain = "chinanews.com"
     start_urls = ['http://www.chinanews.com/']
 

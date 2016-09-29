@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # import os
 from web_news.misc.spiderredis import SpiderRedis
 from scrapy.http import FormRequest, Request
