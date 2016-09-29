@@ -15,7 +15,7 @@ from web_news.misc.spiderredis import SpiderRedis
 
 class QzdjSpider(SpiderRedis):
     name = 'qzdj'
-    webname = '清镇党建'
+    website = '清镇党建'
     download_delay = 0.2
     allowed_domains = ['www.gyqzdj.gov.cn']
     start_urls = ['http://www.gyqzdj.gov.cn/']
@@ -30,13 +30,14 @@ class QzdjSpider(SpiderRedis):
         l.add_value('title', response.xpath('//div[@id="lbyright_xwxq_title"]/text()').extract())
         l.add_value('date',response.xpath('//div[@id="lbyright_xwxq_xxx"]/text()').extract())
         r1 = r"\d{4}\-\d{1,2}\-\d{1,2}"
-	date0 = re.compile(r1)
-	date = ''.join(l.get_collected_values('date'))
-	date1 = date0.findall(date)
+        date0 = re.compile(r1)
+        date = ''.join(l.get_collected_values('date'))
+        date1 = date0.findall(date)
         l.replace_value('date', date1[0])
         l.add_value('content',response.xpath('//div[@id="lbyright_xwxq_txt"]/p/span/text()').extract())
         l.add_value('url', response.url)
         l.add_value('collection_name', self.name)
+        l.add_value('website', self.website)
         return l.load_item()
 
 

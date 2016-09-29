@@ -14,7 +14,7 @@ from web_news.misc.spiderredis import SpiderRedis
 
 class GzdsSpider(SpiderRedis):
     name = 'gzds'
-    webname = '贵州都市网'
+    website = '贵州都市网'
     download_delay = 0.2
     allowed_domains = ['news.gzdsw.com',]
     start_urls = ['http://www.gzdsw.com/']
@@ -32,15 +32,16 @@ class GzdsSpider(SpiderRedis):
         l.add_value('date',response.xpath('//div[@class="infos"]/p/text()').extract())
 
         r1 = r"\d{4}\-\d{1,2}\-\d{1,2}\s\d{2}\:\d{2}\:\d{2}"
-	date0 = re.compile(r1)
-	date = ''.join(l.get_collected_values('date'))
-	date1 = date0.findall(date)
+        date0 = re.compile(r1)
+        date = ''.join(l.get_collected_values('date'))
+        date1 = date0.findall(date)
         l.replace_value('date', date1[0])
         l.add_value('content',response.xpath('//div[@class="content"]/text()').extract())
-	l.add_value('content',response.xpath('//div[@class="description"]/text()').extract())
-	l.add_value('content',response.xpath('//div[@class="content"]/p/text()').extract())
-	l.add_value('content',response.xpath('//div[@class="content"]/div/p/text()').extract())
+        l.add_value('content',response.xpath('//div[@class="description"]/text()').extract())
+        l.add_value('content',response.xpath('//div[@class="content"]/p/text()').extract())
+        l.add_value('content',response.xpath('//div[@class="content"]/div/p/text()').extract())
 
         l.add_value('url', response.url)
         l.add_value('collection_name', self.name)
+        l.add_value('website', self.website)
         return l.load_item()

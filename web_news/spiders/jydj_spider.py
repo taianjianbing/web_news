@@ -15,7 +15,7 @@ import time
 
 class JydjSpider(SpiderRedis):
     name = 'jydj'
-    webname = '观山湖党建'
+    website = '观山湖党建'
     download_delay = 0.2
     allowed_domains = ['www.gyjydj.gov.cn']
     start_urls = ['http://www.gyjydj.gov.cn/']
@@ -33,7 +33,8 @@ class JydjSpider(SpiderRedis):
         #date = time.strptime(date.split()[0], '%Y年%m月%d日%H:%M')
         #l.replace_value('date', time.strftime('%Y-%m-%d %H:%M:%S', date))
         l.add_value('content',response.xpath('//form[@id="Form1"]/table/tr/td/table/tr[2]/td/table/tr[2]/td/table/tr[5]/td/p/span/text()').extract())
-	l.add_value('content',response.xpath('//table[@class="p14"]/tr[5]/td/p/text()').extract())
+        l.add_value('content',response.xpath('//table[@class="p14"]/tr[5]/td/p/text()').extract())
         l.add_value('url', response.url)
         l.add_value('collection_name', self.name)
+        l.add_value('website', self.website)
         return l.load_item()
