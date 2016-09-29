@@ -10,7 +10,8 @@ from scrapy.loader import ItemLoader
 
 class HuanqiuSpider(SpiderRedis):
     name = 'huanqiu'
-    allowed_domains = ['china.huanqiu.com', 'society.huanqiu.com', 'finance.huanqiu.com']
+    allowed_domains = ['china.huanqiu.com', 'society.huanqiu.com', 'finance.huanqiu.com',
+                       'tech.huanqiu.com', 'smart.huanqiu.com']
     start_urls = ['http://www.huanqiu.com/']
     website = u'环球网'
 
