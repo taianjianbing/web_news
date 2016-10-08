@@ -31,7 +31,7 @@ class Filter(object):
         return ret
 
     def link_lastupdate(self, link, last_reply):
-        if link+last_reply in self.seen:
+        if link + last_reply in self.seen:
             return True
         ret = self.col.find({'url': link, 'collection_name': self.name, 'last_reply':last_reply}).count() > 0
 
