@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+import re
+
 import scrapy
+import time
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
 from scrapy.spiders import CrawlSpider, Rule
@@ -8,15 +11,16 @@ from web_news.items import SpiderItem
 from web_news.misc.spiderredis import SpiderRedis
 
 
-class GysdjSpider(SpiderRedis):
-    name = 'gysdj'
-    allowed_domains = ['www.gysdj.gov.cn']
-    start_urls = ['http://www.gysdj.gov.cn/']
-    website = r'贵阳党建网'
+class CnetnewsSpider(SpiderRedis):
+    name = 'cnetnews'
+    allowed_domains = ['cnetnews.com.cn']
+    start_urls = ['http://www.cnetnews.com.cn/']
+    website = u'CNET科技资讯网'
 
     rules = (
-        Rule(LinkExtractor(allow=r'/(\d+).shtml'), callback='parse_item', follow=False),
-        Rule(LinkExtractor(allow=r'index'), follow=True),
+        # 只要2010年以后的
+        Rule(LinkExtractor(allow=r'201\d+/\d+'), callback='parse_item', follow=False),
+        Rule(LinkExtractor(allow=r'list'), follow=True),
 
     )
 
@@ -24,11 +28,15 @@ class GysdjSpider(SpiderRedis):
         l = ItemLoader(item=SpiderItem(), response=response)
         try:
             l.add_value('title', response.xpath('//title/text()').extract_first())
-            date = response.xpath('//td[@align="center"]/text()').re(u'\d+年\d+月\d+日')[0]
-            date = date.replace(u'年', '-').replace(u'月', '-').replace(u'日', ' ') + '00:00:00'
+            date = re.search(r'\d{4}/\d{4}', response.url).group()
+            date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.mktime(time.strptime(date, '%Y/%m%d'))))
             l.add_value('date', date)
-            l.add_value('source', self.website)
-            l.add_value('content', ''.join(response.xpath('//td[@style="line-height: 30px;font-size:16px; padding-top:10px;"]/descendant-or-self::text()').extract()))
+            l.add_value('source', 'CNET科技资讯网')
+            classname = ['qu_content_div', 'qu_ocn', 'qu_wenzhang_con_div', 'text1', 'bin_pic']
+            content = ''
+            for c in classname:
+                content += ''.join(response.xpath('//div[@class="%s"]/descendant-or-self::text()'%c).extract())
+            l.add_value('content', content)
         except Exception as e:
             self.logger.error('error url: %s error msg: %s' % (response.url, e))
             l = ItemLoader(item=SpiderItem(), response=response)

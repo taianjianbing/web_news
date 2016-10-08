@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from scrapy.spiders import CrawlSpider
 from scrapy.http import Request, HtmlResponse
-from web_news.misc.filter import Filter
+from filter import Filter
 from scrapy_redis.connection import get_redis_from_settings
 import json
-
 
 class SpiderRedis(CrawlSpider):
 
@@ -27,7 +26,7 @@ class SpiderRedis(CrawlSpider):
             t = 0
             while t < cnt:
                 spider.logger.info("wait %s spiders to stop" % (cnt-t))
-                spider.server.brpop(spider.redis_wait, 10)
+                spider.server.brpop(spider.redis_wait, 0)
                 t = t + 1
                 cnt = spider.server.scard(spider.redis_compete)
             spider.logger.info("all slave spider exit")
@@ -43,6 +42,7 @@ class SpiderRedis(CrawlSpider):
         spider.filter = Filter.from_crawler(spider.crawler, spider.name)
         spider.compete_key()
         return spider
+
 
     def _requests_to_follow(self, response):
         links = self.filter.bool_fllow(response, self.rules)
@@ -68,3 +68,5 @@ class SpiderRedis(CrawlSpider):
                     yield rule.process_request(r)
         else:
             return
+
+

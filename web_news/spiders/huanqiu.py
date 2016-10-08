@@ -10,14 +10,18 @@ from scrapy.loader import ItemLoader
 
 class HuanqiuSpider(SpiderRedis):
     name = 'huanqiu'
-    allowed_domains = ['china.huanqiu.com', 'society.huanqiu.com']
+    allowed_domains = ['china.huanqiu.com', 'society.huanqiu.com', 'finance.huanqiu.com',
+                       'tech.huanqiu.com', 'smart.huanqiu.com']
     start_urls = ['http://www.huanqiu.com/']
     website = u'环球网'
 
     rules = (
-        Rule(LinkExtractor(allow=r'article/.*/(\d+)(_\d+){0,1}.ht'), callback='parse_item', follow=False),
+        Rule(LinkExtractor(allow=(r'article/.*/(\d+)(_\d+){0,1}.ht',
+                                  r'\d+-\d+/\d+.ht')), callback='parse_item', follow=False),
         Rule(LinkExtractor(allow=r'society.huanqiu.com'), follow=True),
         Rule(LinkExtractor(allow=r'china.huanqiu.com'), follow=True),
+        Rule(LinkExtractor(allow=r'finance.huanqiu.com'), follow=True),
+
     )
 
     def parse_item(self, response):

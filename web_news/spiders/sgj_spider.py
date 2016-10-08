@@ -1,12 +1,14 @@
+#!/usr/bin/python
 # -*- coding:utf-8 -*-
-from web_news.misc.spiderredis import SpiderRedis
+from scrapy.selector import Selector
+from scrapy.spiders import Spider
 from web_news.items import SpiderItem
 from scrapy.http import Request
 import re
+from web_news.misc.filter import Filter
 from scrapy.loader import ItemLoader
 
-
-class Sgjspider(SpiderRedis):
+class Sgjspider(Spider):
     name="sgj"
     website = u'贵州基层党建网'
     download_delay=0.5
@@ -14,6 +16,12 @@ class Sgjspider(SpiderRedis):
     start_urls=[
         "http://gzjcdj.gov.cn/special/SpecialMain.jsp?en=1&spid=942&spclassid=0&iscorp=1&Search=&intPage=1" 
     ]
+
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = super(Sgjspider, cls).from_crawler(crawler, *args, **kwargs)
+        spider.filter = Filter.from_crawler(spider.crawler, spider.name)
+        return spider
 
     def parse(self, response):
         for url in response.xpath('//table/tr/td/table/tr[4]/td/table/tr/td/a/@href').extract():

@@ -15,7 +15,10 @@ class Filter(object):
     def _requests_to_follow(self, response, _rules):
         if not isinstance(response, HtmlResponse) or len(_rules) == 0:
             return
-        return (lnk for lnk in _rules[0].link_extractor.extract_links(response))
+        if _rules[0].process_links:
+            return _rules[0].process_links((lnk for lnk in _rules[0].link_extractor.extract_links(response)))
+        else:
+            return (lnk for lnk in _rules[0].link_extractor.extract_links(response))
 
     def haveseenlink(self, link):
         if link in self.seen:
@@ -25,6 +28,15 @@ class Filter(object):
         if ret:
             self.seen.add(link)
 
+        return ret
+
+    def link_lastupdate(self, link, last_reply):
+        if link + last_reply in self.seen:
+            return True
+        ret = self.col.find({'url': link, 'collection_name': self.name, 'last_reply':last_reply}).count() > 0
+
+        if ret:
+            self.seen.add(link+last_reply)
         return ret
 
     def bool_fllow(self, response, _rules):
