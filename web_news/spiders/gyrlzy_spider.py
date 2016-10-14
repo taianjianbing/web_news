@@ -2,10 +2,10 @@
 # -*- coding:utf-8 -*-
 from scrapy.selector import Selector
 from scrapy.spider import Spider
-from gyrlzy.items import GyrlzyItem
+from web_news.items import SpiderItem
 from scrapy.http import Request,FormRequest
 import re
-from gyrlzy.filter import Filter
+from web_news.misc.filter import Filter
 class Gyrlzyspider(Spider):
     name="gyrlzy"
     download_delay=0.5
@@ -52,11 +52,11 @@ class Gyrlzyspider(Spider):
 	    urll="http://gzgy.lss.gov.cn/module/jslib/jquery/jpage/dataproxy.jsp?startrecord=1&endrecord=600&perpage=200"
             yield FormRequest(url=urll,method="POST",formdata=formdata,cookies=cookies,meta={'dont_redirect':True,'handle_httpstatus_list':[302]},callback=self.parse_item)
     def parse_item(self,response):
-        item=GyrlzyItem()
+        item=SpiderItem()
         sel=Selector(response)
         sites=sel.xpath('//record')
         for site in sites:
-            item=GyrlzyItem()
+            item=SpiderItem()
 	    pattern = re.compile(".*?title='(.*?)'", re.S)
 	    item['title'] = re.findall(pattern, response.body)
             pattern1=re.compile(".*?href='(.*?)'",re.S)
@@ -68,7 +68,7 @@ class Gyrlzyspider(Spider):
             yield Request(url,callback=self.get_news,dont_filter=True)
     def get_news(self,response):
 	data=response.xpath('//div[@class="Art_left"]')
-	item=GyrlzyItem()
+	item=SpiderItem()
         item['title']=data.xpath('//td[@class="title"]/text()').extract()
 	#pattern=re.compile(".*?<p>",re.S)
 	#item['content']=re.findall(pattern,data)

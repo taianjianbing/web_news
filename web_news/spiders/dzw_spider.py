@@ -3,9 +3,9 @@
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
-from wddj.items import WddjItem
-from wddj.misc.filter import Filter
-from wddj.misc.spiderredis import SpiderRedis
+from web_news.items import SpiderItem
+from web_news.misc.filter import Filter
+from web_news.misc.spiderredis import SpiderRedis
 import time
 
 class DfwangSpider(CrawlSpider):
@@ -23,7 +23,7 @@ class DfwangSpider(CrawlSpider):
 
     def get_news(self,response):
 	try:
-	    l = ItemLoader(item=WddjItem(),response=response)
+	    l = ItemLoader(item=SpiderItem(),response=response)
             l.add_value('title', response.xpath('//div[@class="layout"]/h2/text()').extract())
 	    l.add_value('title', response.xpath('//div[@id="wrapper"]/h1/text()').extract())
 	    l.add_value('title', response.xpath('//div[@class="top"]/h1/text()').extract())
@@ -50,7 +50,7 @@ class DfwangSpider(CrawlSpider):
             return l.load_item()
         except Exception as e:
             self.logger.error('error url: %s error msg: %s' % (response.url, e))
-            l = ItemLoader(item=WddjItem(), response=response)
+            l = ItemLoader(item=SpiderItem(), response=response)
             l.add_value('title', '')
             l.add_value('date', '1970-01-01 00:00:00')
             l.add_value('source', '')

@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 from scrapy.spiders import Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader

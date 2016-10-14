@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
+
 from scrapy.spiders import Spider
 from scrapy.http import Request
 from scrapy.selector import Selector
 from web_news.items import SpiderItem
 import re
 import chardet
-from urllib.parse import urljoin
+import sys
+if sys.version_info[0]==3:
+    from urllib.parse import urljoin
+else:
+    from urlparse import urljoin
+
 from web_news.misc.filter import Filter
 import time
 

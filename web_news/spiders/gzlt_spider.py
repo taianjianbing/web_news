@@ -8,9 +8,9 @@ from scrapy.loader import ItemLoader
 from scrapy.http import Request, HtmlResponse
 from scrapy.http import Request,FormRequest
 import re
-from wddj.items import WddjItem
-from wddj.misc.filter import Filter
-from wddj.misc.spiderredis import SpiderRedis
+from web_news.items import SpiderItem
+from web_news.misc.filter import Filter
+from web_news.misc.spiderredis import SpiderRedis
 
 class GzltSpider(SpiderRedis):
     name = 'gzlt'
@@ -26,7 +26,7 @@ class GzltSpider(SpiderRedis):
 
     def get_news(self,response):
 	try:
-            l = ItemLoader(item=WddjItem(),response=response)
+            l = ItemLoader(item=SpiderItem(),response=response)
             l.add_value('title', response.xpath('//a[@id="thread_subject"]/text()').extract())
 	    l.add_value('title', response.xpath('//span[@id="thread_subject"]/text()').extract())
 

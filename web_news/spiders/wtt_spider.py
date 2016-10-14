@@ -3,9 +3,9 @@
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
-from wddj.items import WddjItem
-from wddj.misc.filter import Filter
-from wddj.misc.spiderredis import SpiderRedis
+from web_news.items import SpiderItem
+from web_news.misc.filter import Filter
+from web_news.misc.spiderredis import SpiderRedis
 import time
 class WttSpider(SpiderRedis):
     name = 'wtt'
@@ -21,7 +21,7 @@ class WttSpider(SpiderRedis):
 
     def get_news(self,response):
 	try:
-            l = ItemLoader(item=WddjItem(),response=response)
+            l = ItemLoader(item=SpiderItem(),response=response)
             l.add_value('title', response.xpath('//div[@class="article_header"]/h1/text()').extract())
 
             l.add_value('date',response.xpath('//div[@class="article_header"]/p[2]/text()').extract())

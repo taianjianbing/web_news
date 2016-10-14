@@ -3,9 +3,9 @@
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
-from wddj.items import WddjItem
-from wddj.misc.filter import Filter
-from wddj.misc.spiderredis import SpiderRedis
+from web_news.items import SpiderItem
+from web_news.misc.filter import Filter
+from web_news.misc.spiderredis import SpiderRedis
 import re
 class ChwangSpider(SpiderRedis):
     name = 'chwang'
@@ -28,7 +28,7 @@ class ChwangSpider(SpiderRedis):
     ]
 
     def get_news(self,response):
-        l = ItemLoader(item=WddjItem(),response=response)
+        l = ItemLoader(item=SpiderItem(),response=response)
         l.add_value('title', response.xpath('//div[@class="crumbs"]/h1/text()').extract())
 	l.add_value('title', response.xpath('//div[@class="headBox"]/h1/text()').extract())
 	l.add_value('title', response.xpath('//h1[@class="artTitle"]/text()').extract())

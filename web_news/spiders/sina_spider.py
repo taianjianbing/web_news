@@ -1,9 +1,15 @@
 # -*- coding:utf-8 -*-
+
 from web_news.misc.spiderredis import SpiderRedis
 from scrapy.http import Request
 import json
 import time
-from urllib.parse import urlencode
+import sys
+if sys.version_info[0]==3:
+    from urllib.parse import urlencode
+else:
+    from urllib import urlencode
+
 from web_news.items import WeiboItem
 import re
 
