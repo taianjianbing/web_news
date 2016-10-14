@@ -15,9 +15,12 @@ class MongoDBPipeline(object):
         self.mongo_username = mongo_username
         self.mongo_password = mongo_password
         self.mongo_ip = mongo_ip
+        # for mongos cluster
+        if self.mongo_ip.find(',')!=-1:
+            self.mongo_ip = self.mongo_ip.split(',')
         self.mongo_port = mongo_port
         self.mongo_collection = mongo_collection
-        self.client = MongoClient(self.mongo_ip, self.mongo_port)
+        self.client = MongoClient(host=self.mongo_ip, port=self.mongo_port)
         self.db = self.client[self.mongo_db]
 
     @classmethod
