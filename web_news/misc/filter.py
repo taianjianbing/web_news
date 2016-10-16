@@ -14,7 +14,7 @@ class Filter(object):
 
     def _requests_to_follow(self, response, _rules):
         if not isinstance(response, HtmlResponse) or len(_rules) == 0:
-            return
+            return []
         if _rules[0].process_links:
             return _rules[0].process_links((lnk for lnk in _rules[0].link_extractor.extract_links(response)))
         else:
