@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import re
+from urllib import unquote
 
 import scrapy
 import time
 
+import sys
 from scrapy.link import Link
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
@@ -16,12 +18,10 @@ from web_news.misc.spiderredis import SpiderRedis
 def process_links(links):
     ret = []
     for link in links:
-        url = link.url
-        urls = url.split('%0A')
+        urls = unquote(link.url).split()
         for l in urls:
             # 只找2010年以后的
-            if re.search(r'201{5}/\d+_\d+.shtml', l) != None:
-
+            if re.search(r'201\d{5}/\d+_\d+\.shtml', l) != None:
                 ret.append(Link(url=l, text=link.text, fragment=link.fragment, nofollow=link.nofollow))
     return ret
 
@@ -43,7 +43,7 @@ class IfengSpider(SpiderRedis):
 
         # assert title != '', 'title is null, %s'%response.url
         if title == '':
-            title += response.xpath('//title/text()').extract_first()
+            title += response.xpath('//title/text()').extract_first() or ''
         return title
 
     def getdate(self, response):
@@ -92,6 +92,7 @@ class IfengSpider(SpiderRedis):
                     self.logger.error('no method for %s'%attr)
 
         except Exception as e:
+            # self.logger.info((sys.exc_traceback))
             self.logger.error('error url: %s error msg: %s' % (response.url, e))
             l = ItemLoader(item=SpiderItem(), response=response)
             l.add_value('title', '')
