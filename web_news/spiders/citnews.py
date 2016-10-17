@@ -25,8 +25,8 @@ class CitnewsSpider(SpiderRedis):
     def parse_item(self, response):
         l = ItemLoader(item=SpiderItem(), response=response)
         try:
-            l.add_value('title', response.xpath('//title/text()').extract_first())
-            l.add_value('date', response.xpath('//span[@class="time"]/text()').extract_first())
+            l.add_value('title', response.xpath('//title/text()').extract_first() or '')
+            l.add_value('date', response.xpath('//span[@class="time"]/text()').extract_first() or '')
             l.add_value('source', self.website)
             classname = ['newstext']
             content = ''
