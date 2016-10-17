@@ -27,7 +27,10 @@ class CitnewsSpider(SpiderRedis):
         try:
             l.add_value('title', response.xpath('//title/text()').extract_first() or '')
             l.add_value('date', response.xpath('//span[@class="time"]/text()').extract_first())
-            l.add_value('date', response.xpath('//span[@class="padding-left cccc"]/text()').extract_first())
+            date = response.xpath('//span[@class="padding-left cccc"]/text()').extract_first()
+            if date != None or date != '':
+                date = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.mktime(time.strptime(iteminfo['date'],u'%Y年%m月%d %H:%M:%S'))))
+            l.add_value('date', date)
             l.add_value('source', self.website)
             classname = ['newstext']
             content = ''
