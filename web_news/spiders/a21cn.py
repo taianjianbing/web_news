@@ -39,3 +39,4 @@ class A21cnSpider(SpiderRedis):
             l.add_value('url', response.url)
             l.add_value('collection_name', self.name)
             l.add_value('website', self.website)
+            return l.load_item()
