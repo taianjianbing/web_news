@@ -7,6 +7,10 @@ from scrapy.spiders import CrawlSpider, Rule
 from web_news.items import SpiderItem
 from web_news.misc.spiderredis import SpiderRedis
 
+def function(links):
+    for link in links:
+        if link.url.find('m.kejixun.com') != -1:continue
+        yield link
 
 class KejixunSpider(SpiderRedis):
     name = 'kejixun'
@@ -15,15 +19,15 @@ class KejixunSpider(SpiderRedis):
     website = u'科技讯'
 
     rules = (
-        Rule(LinkExtractor(allow=r'article/\d+/\d+'), callback='parse_item', follow=False),
+        Rule(LinkExtractor(allow=r'article/\d+/\d+'), callback='parse_item', follow=False, process_links=function),
         Rule(LinkExtractor(allow=r'kejixun'), follow=True),
     )
 
     def parse_item(self, response):
         l = ItemLoader(item=SpiderItem(), response=response)
         try:
-            l.add_value('title', response.xpath('//title/text()').extract_first())
-            l.add_value('date', response.xpath('//div[@class="titleInfo"]/span[1]/text()').extract_first())
+            l.add_value('title', response.xpath('//title/text()').extract_first() or '')
+            l.add_value('date', response.xpath('//div[@class="titleInfo"]/span[1]/text()').extract_first() or '')
             l.add_value('source', self.website)
             classname = ['artibody']
             content = ''
