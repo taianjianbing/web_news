@@ -4,7 +4,7 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
-
+import time
 from pymongo import MongoClient
 from hashlib import md5
 
@@ -39,6 +39,9 @@ class MongoDBPipeline(object):
 
     def process_item(self, item, spider):
         item['md5'] = self.spidermd5(item)
+        item = dict(item)
+        # 记录爬取时间，对调试爬取程序有用
+        item['crawl_date'] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
         self.db[self.mongo_collection].update({'md5': item['md5'], 'date':item['date']}, {'$set': dict(item)}, True, True)
 
     def spidermd5(self, item):

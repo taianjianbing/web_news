@@ -20,7 +20,7 @@ class KejixunSpider(SpiderRedis):
 
     rules = (
         Rule(LinkExtractor(allow=r'article/\d+/\d+'), callback='parse_item', follow=False, process_links=function),
-        Rule(LinkExtractor(allow=r'kejixun'), follow=True),
+        Rule(LinkExtractor(allow=('news/chanjing', 'news/tele', 'news/it', 'news/internet')), follow=True),
     )
 
     def parse_item(self, response):
