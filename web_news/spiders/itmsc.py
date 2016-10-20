@@ -24,7 +24,7 @@ class itmscSpider(SpiderRedis):
 
     rules = (
         Rule(LinkExtractor(allow=r'view-\d+-\d+.html'), callback='parse_item', follow=False, process_links=process_links),
-        Rule(LinkExtractor(allow=r'list-\d+.html'), follow=True),
+        Rule(LinkExtractor(allow=r'list(-\d+)+'), follow=True),
     )
 
     def gettitle(self, response):
