@@ -40,13 +40,15 @@ class itmscSpider(SpiderRedis):
     def getdate(self, response):
         date = None
         t = ''
-        t += response.xpath('//div[@class="cc_l"]/descendant-or-self::div[@class="arc_sc"]/descendant-or-self::text()').re_first(r'\d+-\d+-\d+\W\d+:\d+')
+        t += response.xpath('//div[@class="cc_l"]/descendant-or-self::div[@class="arc_sc"]/descendant-or-self::text()').re_first(r'\d+-\d+-\d+\W\d+:\d+') or ''
+        t += response.xpath('//div[@class="arc_t_ll"]/p/descendant-or-self::text()').re_first(r'\d+-\d+-\d+\W\d+:\d+') or ''
         p = '%Y-%m-%d %H:%M'
         date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.mktime(time.strptime(t.strip(), p))))
         return date
 
     def getcontent(self, response):
         content = ''.join(response.xpath('//div[@class="cc_l"]/descendant-or-self::div[@class="arc_body"]/descendant-or-self::text()').extract())
+        content += ''.join(response.xpath('//div[@class="tv_cont"]/descendant-or-self::p/text()').extract())
         return content
 
     def parse_item(self, response):
