@@ -37,11 +37,11 @@ class MongoDb(DB):
         self.mongo_ip = mongo_ip
         self.mongo_port = mongo_port
         self.mongo_collection = mongo_collection
-        self.client = MongoClient(self.mongo_ip, self.mongo_port)
+        self.client = MongoClient(host=self.mongo_ip, port=self.mongo_port)
         self.db = self.client[self.mongo_db]
 
     def find(self, item):
         return self.db[self.mongo_collection].count(item)>0
 
     def update(self, item):
-        return self.db[self.mongo_collection].update({'md5': item['md5']}, {'$set': item}, True, True)['nModified']>0
+        return self.db[self.mongo_collection].update({'md5': item['md5'], 'date':item['date']}, {'$set': dict(item)}, True, True)['nModified']>0

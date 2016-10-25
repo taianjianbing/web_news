@@ -39,8 +39,7 @@ header = {
 }
 
 urlTemplate = 'http://roll.%(site)s.qq.com/interface/roll.php?%(random)s&cata=&site=%(site)s&date=%(date)s&page=%(page)s&mode=1&of=json'
-db = MongoDb(mongo_db='atom', mongo_username='admin', mongo_password='123456', mongo_collection='news', mongo_ip='192.168.1.54', mongo_port=27017)
-
+db = MongoDb(mongo_db='web_news', mongo_username='', mongo_password='',mongo_collection='news', mongo_ip=['10.2.11.231', '10.2.11.230'], mongo_port=27017)
 def parse_content(html_data):
     item = Item()
     response = etree.HTML(html_data)
@@ -49,12 +48,13 @@ def parse_content(html_data):
         item['date'] = re.search(r'\d{4}-\d{2}-\d{2}\W\d{2}:\d{2}', ''.join(html_data)).group()+':00'
     except AttributeError as e:
         item['date'] = '1970-01-01 00:00:00'
-    item['content'] = ''.join(response.xpath('//div[@id="Cnt-Main-Article-QQ"]/descendant-or-self::text()'))
+    item['content'] = ''.join(response.xpath('//div[@id="Cnt-Main-Article-QQ"]/descendant-or-self::p/text()'))
     item['content'] = ''.join([i.strip() for i in item['content'].split()])
     return item
 
 def store_item(item):
     item = dict(item)
+    item['collection_name'] = 'qq'
     ret = db.find(item)
     if ret: return ret
     db.update(item)
@@ -66,7 +66,7 @@ def fetch_each_content(request):
         del request.headers['Host']
         sem.acquire()
         # wait some time
-        gevent.sleep(random()*10+0.5)
+        gevent.sleep(random()+0.5)
         try:
             response = urllib2.urlopen(request).read()
         except Exception as e:
@@ -166,3 +166,4 @@ if __name__ == '__main__':
             break
         date = date +  datetime.timedelta(-1)
     print 'spider exit'
+
