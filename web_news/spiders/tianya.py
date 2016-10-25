@@ -19,7 +19,6 @@ class TianyaSpider(SpiderForum):
     )
     custom_settings = {
         # 'CONCURRENT_REQUESTS_PER_IP':10,
-        'COOKIES_ENABLED':False,
         'CLOSESPIDER_TIMEOUT': 3600,
     }
     watch = ['b_minsheng',
@@ -62,32 +61,30 @@ class TianyaSpider(SpiderForum):
     def parse_each_item(self, response):
         # self.logger.debug(response.url)
         ret = None
-        if response.meta.get('iteminfo') == None:
-            iteminfo = {}
-            iteminfo['url'] = response.url
-            iteminfo['view_num'] = response.xpath('//i[@class="iconfont icon-view"]/text()').extract_first().strip()
-            iteminfo['reply_num'] = response.xpath('//i[@class="iconfont icon-reply"]/text()').extract_first().strip()
-            iteminfo['title'] = response.xpath('//h1/text()').extract_first()
-            try:
-                iteminfo['content'] = ''.join(response.xpath('//div[@class="bd"]')[0].xpath('descendant-or-self::text()').extract())
-            except Exception as e:
-                iteminfo['content'] = ''
 
-            iteminfo['collection_name'] = self.name
-            iteminfo['website'] = self.website
-            iteminfo['date'] = response.xpath('//p[@class="time fc-gray"]/text()')[0].extract()
-            # yield Request(url=response.request.url+'?page=100000000', callback=self.parse_each_item, meta={'iteminfo':iteminfo})
-            last_page = 'http://bbs.tianya.cn/m/post-free-5573164-9999999.shtml'
-            url = re.sub('-\d+-', re.search(r'-\d+-', response.url).group(), last_page)
-            ret = Request(url=url, meta={'iteminfo':iteminfo})
-        else:
-            iteminfo = response.meta.get('iteminfo')
-            iteminfo['last_reply'] = response.xpath('//p[@class="time fc-gray"]/text()')[-1].extract()
-            item = ItemLoader(item=FroumItem(), response=response)
-            for k, v in iteminfo.items():
-                item.add_value(k, v)
-            ret = item.load_item()
-        return ret
+        iteminfo = {}
+        iteminfo['url'] = response.url
+        iteminfo['view_num'] = response.xpath('//i[@class="iconfont icon-view"]/text()').extract_first().strip()
+        iteminfo['reply_num'] = response.xpath('//i[@class="iconfont icon-reply"]/text()').extract_first().strip()
+        iteminfo['title'] = response.xpath('//h1/text()').extract_first()
+        try:
+            iteminfo['content'] = ''.join(response.xpath('//div[@class="bd"]')[0].xpath('descendant-or-self::text()').extract())
+        except Exception as e:
+            iteminfo['content'] = ''
+
+        iteminfo['collection_name'] = self.name
+        iteminfo['website'] = self.website
+        iteminfo['date'] = response.xpath('//p[@class="time fc-gray"]/text()')[0].extract()
+        # yield Request(url=response.request.url+'?page=100000000', callback=self.parse_each_item, meta={'iteminfo':iteminfo})
+        # last_page = 'http://bbs.tianya.cn/m/post-free-5573164-9999999.shtml'
+        # url = re.sub('-\d+-', re.search(r'-\d+-', response.url).group(), last_page)
+        # ret = Request(url=url, meta={'iteminfo':iteminfo})
+        iteminfo['last_reply'] = iteminfo['date']
+
+        l = ItemLoader(item=FroumItem(), response=response)
+        for k in iteminfo.keys():
+            l.add_value(k, iteminfo[k])
+        return l.load_item()
 
     def next_page(self, response):
         next_pg = response.xpath('//a[@class="u-btn "]/@href').re_first('/m/list\.jsp\?item=free\&nextid=\d+')
