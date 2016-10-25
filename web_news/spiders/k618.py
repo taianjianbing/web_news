@@ -35,7 +35,9 @@ class K618Spider(SpiderRedis):
     allowed_domains = ['news.k618.cn']
     start_urls = ['http://news.k618.cn/']
     website = u'未来网'
-
+    custom_settings = {
+        'CLOSESPIDER_TIMEOUT':3600,
+    }
     rules = (
         Rule(LinkExtractor(allow=r't\d+_\d+'), callback='parse_item', follow=False, process_links=function),
         Rule(LinkExtractor(allow=('society', 'tech', 'finance')), follow=True),

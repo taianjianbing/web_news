@@ -23,7 +23,9 @@ class HuanqiuSpider(SpiderRedis):
         Rule(LinkExtractor(allow=r'finance.huanqiu.com'), follow=True),
 
     )
-
+    custom_settings = {
+        'CLOSESPIDER_TIMEOUT': 3600,
+    }
     def parse_item(self, response):
         l = ItemLoader(item=SpiderItem(), response=response)
         try:

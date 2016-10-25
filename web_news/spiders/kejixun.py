@@ -22,7 +22,9 @@ class KejixunSpider(SpiderRedis):
         Rule(LinkExtractor(allow=r'article/\d+/\d+'), callback='parse_item', follow=False, process_links=function),
         Rule(LinkExtractor(allow=('news/chanjing', 'news/tele', 'news/it', 'news/internet')), follow=True),
     )
-
+    custom_settings = {
+        'CLOSESPIDER_TIMEOUT':3600,
+    }
     def parse_item(self, response):
         l = ItemLoader(item=SpiderItem(), response=response)
         try:

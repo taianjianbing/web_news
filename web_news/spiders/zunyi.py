@@ -19,8 +19,7 @@ class ZunyiSpider(SpiderForum):
     )
 
     custom_settings = {
-        # 'REDIRECT_ENABLED':True,
-        # 'DOWNLOAD_TIMEOUT':2,
+        'CLOSESPIDER_TIMEOUT': 3600,
     }
 
     def parse_each_node(self, response):

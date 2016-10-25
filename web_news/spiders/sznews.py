@@ -22,6 +22,10 @@ class SznewsSpider(SpiderRedis):
         # main page dynamic load today news
         # Rule(LinkExtractor(allow=r'jb.sznews.com'), callback="main_page", follow=True),
     )
+    custom_settings = {
+        'CLOSESPIDER_TIMEOUT': 3600,
+    }
+
     def parse_start_url(self, response):
         url = urljoin(response.url, re.search(r'html/.*/node_1163.htm', response.body).group())
         a = re.search(r'\d+-\d+/\d+', url).group().replace('-', '/').split('/')

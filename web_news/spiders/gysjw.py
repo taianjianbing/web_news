@@ -18,7 +18,9 @@ class GysjwSpider(SpiderRedis):
         Rule(LinkExtractor(allow=r'content_'), callback='parse_item', follow=False),
         Rule(LinkExtractor(allow=r'node_'), follow=True),
     )
-
+    custom_settings = {
+        'CLOSESPIDER_TIMEOUT':3600,
+    }
     def parse_item(self, response):
         try:
             l = ItemLoader(item=SpiderItem(), response=response)

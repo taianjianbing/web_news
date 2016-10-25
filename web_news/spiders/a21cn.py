@@ -21,7 +21,9 @@ class A21cnSpider(SpiderRedis):
         Rule(LinkExtractor(allow=r'domestic/'), follow=True),
         Rule(LinkExtractor(allow=r'social//'), follow=True),
     )
-
+    custom_settings = {
+        'CLOSESPIDER_TIMEOUT':3600,
+    }
 
     def parse_item(self, response):
         l = ItemLoader(item=SpiderItem(), response=response)

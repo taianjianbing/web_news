@@ -19,6 +19,7 @@ class GywbSpider(SpiderRedis):
     custom_settings = {
         'DOWNLOAD_TIMEOUT':2,
         # 'USER_AGENT':"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36",
+        'CLOSESPIDER_TIMEOUT': 3600,
     }
     rules = (
         Rule(LinkExtractor(allow=r'content_'), callback='parse_item', follow=False),

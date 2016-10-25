@@ -16,7 +16,9 @@ class BjdSpider(SpiderRedis):
         Rule(LinkExtractor(allow=r't(\d+)_(\d+)'), callback='parse_item', follow=False),
         Rule(LinkExtractor(allow=r'bjd.com.cn'), follow=True),
     )
-
+    custom_settings = {
+        'CLOSESPIDER_TIMEOUT':3600,
+    }
     def parse_item(self, response):
         l = ItemLoader(item=SpiderItem(), response=response)
         try:
