@@ -27,6 +27,7 @@ def parse_content(html_data):
         [''.join(i.split()) for i in response.xpath('//div[@class="rich_media_content "]/descendant-or-self::text()')])
     item['wechatno'] = ''.join(response.xpath(
         '//a[@class="rich_media_meta rich_media_meta_link rich_media_meta_nickname"]/descendant-or-self::text()'))
+    item['crawl_date'] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
     return item
 
 
@@ -71,7 +72,7 @@ def crawl(biz, url, headers):
                 item = {}
                 content_url = html2dict(msgm['content_url'])
                 item['url'] = content_url
-                item['date'] = datetime.datetime.fromtimestamp(comm_msg_info['datetime']).strftime('%Y-%m-%d %H:%M:%S')
+                item['date'] = datetime.datetime.fromtimestamp(comm_msg_info['datetime']).strftime('%Y-%m-%d')
                 if url.find('http') == -1:
                     continue
                 msgdetail = sess.get(content_url)
@@ -83,7 +84,7 @@ def crawl(biz, url, headers):
             content_url = html2dict(app_msg_ext_info['content_url'])
             item = {}
             item['url'] = content_url
-            item['date'] = datetime.datetime.fromtimestamp(comm_msg_info['datetime']).strftime('%Y-%m-%d %H:%M:%S')
+            item['date'] = datetime.datetime.fromtimestamp(comm_msg_info['datetime']).strftime('%Y-%m-%d')
             if content_url.find('http') == -1:
                 continue
             msgdetail = sess.get(content_url)

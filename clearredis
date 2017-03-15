@@ -1,0 +1,9 @@
+if [ x$1 != x ]
+then
+redis-cli del $1:requests
+redis-cli del $1:compete
+redis-cli del $1:dupefilter
+redis-cli del $1:wait
+
+
+fi

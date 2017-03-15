@@ -50,11 +50,13 @@ def parse_content(html_data):
         item['date'] = '1970-01-01 00:00:00'
     item['content'] = ''.join(response.xpath('//div[@id="Cnt-Main-Article-QQ"]/descendant-or-self::p/text()'))
     item['content'] = ''.join([i.strip() for i in item['content'].split()])
+    item['crawl_date'] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
     return item
 
 def store_item(item):
     item = dict(item)
     item['collection_name'] = 'qq'
+    item['date'] = item['date'][:10] if item.get('date')!=None else ''
     ret = db.find(item)
     if ret: return ret
     db.update(item)

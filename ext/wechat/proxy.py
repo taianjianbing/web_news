@@ -2,6 +2,7 @@
 import urlparse
 from pymongo import MongoClient
 import json
+import time
 db = MongoClient(host='10.2.11.234', port=27017)['wechatkeys']
 
 
@@ -13,5 +14,7 @@ def request(context, flow):
     data = {'biz': par['__biz'][0]}
     data['url'] = par
     data['headers'] = dict(flow.request.headers)
-    db.wechatkeys.update({'biz': data['biz'],}, {'$set': dict(data)}, True, True)
+    data['crawl_date'] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+    print "aaaaaa"
+    print db.wechatkeys.update({'biz': data['biz'],}, {'$set': dict(data)}, True, True)
 

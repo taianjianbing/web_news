@@ -40,6 +40,7 @@ class MongoDBPipeline(object):
     def process_item(self, item, spider):
         item['md5'] = self.spidermd5(item)
         item = dict(item)
+        item['date'] = item['date'][:10]
         # 记录爬取时间，对调试爬取程序有用
         item['crawl_date'] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
         self.db[self.mongo_collection].update({'md5': item['md5'], 'date':item['date']}, {'$set': dict(item)}, True, True)

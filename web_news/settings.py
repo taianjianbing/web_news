@@ -102,9 +102,9 @@ LOG_LEVEL = 'INFO'
 
 MONGO_DATABASE = 'web_news'
 MONGO_COLLECTION = 'news'
-MONGO_USER = 'admin'
-MONGO_PASSWORD = '123456'
-MONGO_IP = '192.168.1.54'
+# MONGO_USER = 'admin'
+# MONGO_PASSWORD = '123456'
+MONGO_IP = '10.2.11.230, 10.2.11.231'
 MONGO_PORT = 27017
 
 COMMANDS_MODULE = 'web_news.commands'
@@ -114,7 +114,7 @@ DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 SCHEDULER_PERSIST = True
 SCHEDULER_QUEUE_CLASS = "scrapy_redis.queue.SpiderQueue"
-REDIS_HOST = '192.168.1.54'
+REDIS_HOST = '10.2.11.234'
 
 # distribution for increment
 
