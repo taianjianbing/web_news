@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import json
 
+import time
 from scrapy import Item
-from scrapy import Request
 from scrapy import Spider
+from scrapy import signals
+from scrapy.exceptions import DontCloseSpider
 from scrapy_redis import get_redis_from_settings
 
+from web_news.misc.LogSpider import LogStatsDIY
 from web_news.misc.filter import Filter
 
 class SpiderForum(Spider):
@@ -22,28 +25,20 @@ class SpiderForum(Spider):
 
     @staticmethod
     def close(spider, reason):
-        # before close spider
-        spider.server.lpush(spider.redis_wait, json.dumps(spider.key))
-        cnt = spider.server.scard(spider.redis_compete)
-        if spider.key == 1:
-            t = 0
-            while t < cnt:
-                spider.logger.info("wait %s spiders to stop" % (cnt-t))
-                spider.server.brpop(spider.redis_wait, 0)
-                t = t + 1
-                cnt = spider.server.scard(spider.redis_compete)
-            spider.logger.info("all slave spider exit")
-            spider.server.delete(spider.redis_compete)
-            spider.server.delete(spider.redis_wait)
-            spider.server.delete('%(spider)s:dupefilter' % {'spider': spider.name})
+        spider.logger.info("all slave spider exit")
+        spider.server.delete(spider.redis_compete)
+        spider.server.delete(spider.redis_wait)
+        spider.server.delete('%(spider)s:dupefilter' % {'spider': spider.name})
+        spider.server.delete('%(spider)s:requests' % {'spider': spider.name})
 
-            # super(BjnewsSpider, reason).close()
 
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
         spider = super(SpiderForum, cls).from_crawler(crawler, *args, **kwargs)
         spider.filter = Filter.from_crawler(spider.crawler, spider.name)
         spider.compete_key()
+        spider.crawler.signals.connect(spider.spider_idle, signal=signals.spider_idle)
+        LogStatsDIY.from_crawler(crawler)
         return spider
 
     def parse(self, response):
@@ -96,3 +91,44 @@ class SpiderForum(Spider):
         :return: request to next page
         """
         raise NotImplementedError
+
+
+    def spiderExit(self):
+        # before close spider
+        self.server.lpush(self.redis_wait, json.dumps(self.key))
+        cnt = self.server.scard(self.redis_compete)
+        if self.key == 1:
+            t = 0
+            while t < cnt:
+                self.logger.info("wait %s spiders to stop" % (cnt - t))
+                self.server.brpop(self.redis_wait, 0)
+                t = t + 1
+                cnt = self.server.scard(self.redis_compete)
+            self.logger.info("all slave spider exit")
+            self.server.delete(self.redis_compete)
+            self.server.delete(self.redis_wait)
+            self.server.delete('%(spider)s:dupefilter' % {'spider': self.name})
+
+            self.server.publish('REDIS_PUBLISH:' + self.name, 'continue')
+            self.logger.info('publish to restart')
+        else:
+            pubsub = self.server.pubsub()
+            pubsub.subscribe('REDIS_PUBLISH:' + self.name)
+            for item in pubsub.listen():
+                if item['data'] == 'continue':
+                    break
+
+                    # super(BjnewsSpider, reason).close()
+
+    def spider_idle(self):
+        get_redis_from_settings()
+        """Schedules a request if available, otherwise waits."""
+        # XXX: Handle a sentinel to close the spider.
+        # sleep somtime ?
+        self.spiderExit()
+        self.logger.info('restart')
+        self.compete_key()
+        # start_requests won't be filtered
+        for req in self.start_requests():
+            self.crawler.engine.crawl(req, spider=self)
+        raise DontCloseSpider
