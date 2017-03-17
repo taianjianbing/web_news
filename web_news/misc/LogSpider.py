@@ -23,7 +23,6 @@ class LogStatsDIY(object):
         o.mongo = MongoDBPipeline.from_crawler(crawler)
         crawler.signals.connect(o.spider_opened, signal=signals.spider_opened)
         crawler.signals.connect(o.spider_closed, signal=signals.spider_closed)
-        logger.info("testaaaaaaaaaaaaaaaaaaaa")
         return o
 
     def spider_opened(self, spider):
@@ -48,7 +47,8 @@ class LogStatsDIY(object):
             pass
         item['active_date'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
         item.update(log_args)
-        logger.info(item)
+        item['_stats'] = self.stats._stats
+        logger.debug(item)
         # logger.info(msg, log_args, extra={'spider': spider})
         self.mongo.db['LogStatsDIY'].update({'name': item['name']}, {'$set': dict(item)}, True,
                                             True)
