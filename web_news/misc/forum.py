@@ -126,6 +126,7 @@ class SpiderForum(Spider):
         # XXX: Handle a sentinel to close the spider.
         # sleep somtime ?
         self.spiderExit()
+        time.sleep(300)
         self.logger.info('restart')
         self.compete_key()
         # start_requests won't be filtered

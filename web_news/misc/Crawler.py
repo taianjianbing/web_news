@@ -1,3 +1,4 @@
+import time
 from scrapy import signals
 from scrapy.exceptions import DontCloseSpider
 from scrapy.spiders import CrawlSpider
@@ -18,6 +19,7 @@ class CrawlSpiderDIY(CrawlSpider):
         """Schedules a request if available, otherwise waits."""
         # XXX: Handle a sentinel to close the spider.
         # sleep somtime ?
+        time.sleep(300)
         self.logger.info('restart')
         # start_requests won't be filtered
         for req in self.start_requests():

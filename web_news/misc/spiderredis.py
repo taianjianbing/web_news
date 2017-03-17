@@ -99,6 +99,7 @@ class SpiderRedis(CrawlSpider):
         """Schedules a request if available, otherwise waits."""
         # XXX: Handle a sentinel to close the spider.
         # sleep somtime ?
+        time.sleep(300)
         self.spiderExit()
         self.logger.info('restart')
         self.compete_key()
