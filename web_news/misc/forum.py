@@ -121,7 +121,6 @@ class SpiderForum(Spider):
                     # super(BjnewsSpider, reason).close()
 
     def spider_idle(self):
-        get_redis_from_settings()
         """Schedules a request if available, otherwise waits."""
         # XXX: Handle a sentinel to close the spider.
         # sleep somtime ?
