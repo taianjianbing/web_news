@@ -23,6 +23,7 @@ class LogStatsDIY(object):
         o.mongo = MongoDBPipeline.from_crawler(crawler)
         crawler.signals.connect(o.spider_opened, signal=signals.spider_opened)
         crawler.signals.connect(o.spider_closed, signal=signals.spider_closed)
+        logger.info("testaaaaaaaaaaaaaaaaaaaa")
         return o
 
     def spider_opened(self, spider):

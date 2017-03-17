@@ -11,7 +11,7 @@ class CrawlSpiderDIY(CrawlSpider):
     def from_crawler(cls, crawler, *args, **kwargs):
         spider = super(CrawlSpiderDIY, cls).from_crawler(crawler, *args, **kwargs)
         spider.crawler.signals.connect(spider.spider_idle, signal=signals.spider_idle)
-        LogStatsDIY.from_crawler(crawler)
+        spider.l = LogStatsDIY.from_crawler(crawler)
         return spider
 
 

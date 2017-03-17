@@ -11,8 +11,8 @@ from scrapy_redis import get_redis_from_settings
 from web_news.misc.LogSpider import LogStatsDIY
 from web_news.misc.filter import Filter
 
-class SpiderForum(Spider):
 
+class SpiderForum(Spider):
     def compete_key(self):
         self.server = get_redis_from_settings(self.settings)
         self.redis_compete = self.settings.get('REDIS_COMPETE') % {'spider': self.name}
@@ -31,14 +31,13 @@ class SpiderForum(Spider):
         spider.server.delete('%(spider)s:dupefilter' % {'spider': spider.name})
         spider.server.delete('%(spider)s:requests' % {'spider': spider.name})
 
-
     @classmethod
     def from_crawler(cls, crawler, *args, **kwargs):
         spider = super(SpiderForum, cls).from_crawler(crawler, *args, **kwargs)
         spider.filter = Filter.from_crawler(spider.crawler, spider.name)
         spider.compete_key()
         spider.crawler.signals.connect(spider.spider_idle, signal=signals.spider_idle)
-        LogStatsDIY.from_crawler(crawler)
+        spider.l = LogStatsDIY.from_crawler(crawler)
         return spider
 
     def parse(self, response):
@@ -46,7 +45,7 @@ class SpiderForum(Spider):
 
     def _parse_each_node(self, response):
         requests_it = [i.replace(callback=self._parse_each_item) for i in self.parse_each_node(response)]
-        if len(requests_it)==0: return
+        if len(requests_it) == 0: return
         np = self.next_page(response)
         requests_it[-1].meta['nextpage'] = np
         for i in requests_it:
@@ -54,7 +53,7 @@ class SpiderForum(Spider):
 
     def _parse_each_item(self, response):
         it = self.parse_each_item(response)
-        if it==None: return
+        if it == None: return
         # it may be item or request
         ret = []
         if isinstance(it, Item):
@@ -76,14 +75,14 @@ class SpiderForum(Spider):
         :param response:
         :return: requests list
         """
-        raise  NotImplementedError
+        raise NotImplementedError
 
     def parse_each_item(self, response):
         """
         :param response:
         :return: (item, response) list
         """
-        raise  NotImplementedError
+        raise NotImplementedError
 
     def next_page(self, response):
         """
@@ -91,7 +90,6 @@ class SpiderForum(Spider):
         :return: request to next page
         """
         raise NotImplementedError
-
 
     def spiderExit(self):
         # before close spider
@@ -121,7 +119,6 @@ class SpiderForum(Spider):
                     # super(BjnewsSpider, reason).close()
 
     def spider_idle(self):
-        get_redis_from_settings()
         """Schedules a request if available, otherwise waits."""
         # XXX: Handle a sentinel to close the spider.
         # sleep somtime ?

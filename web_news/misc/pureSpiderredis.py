@@ -42,7 +42,7 @@ class PureSpiderRedis(Spider):
         spider.filter = Filter.from_crawler(spider.crawler, spider.name)
         spider.compete_key()
         spider.crawler.signals.connect(spider.spider_idle, signal=signals.spider_idle)
-        LogStatsDIY.from_crawler(crawler)
+        spider.l = LogStatsDIY.from_crawler(crawler)
 
         return spider
 
