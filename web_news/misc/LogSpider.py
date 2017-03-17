@@ -1,6 +1,7 @@
 import logging
 import time
 
+from scrapy import signals
 from twisted.internet import task
 
 from web_news.pipelines import MongoDBPipeline
@@ -20,6 +21,8 @@ class LogStatsDIY(object):
         # o = super(LogStatsDIY, cls).from_crawler(crawler)
         o = cls(crawler.stats)
         o.mongo = MongoDBPipeline.from_crawler(crawler)
+        crawler.signals.connect(o.spider_opened, signal=signals.spider_opened)
+        crawler.signals.connect(o.spider_closed, signal=signals.spider_closed)
         return o
 
     def spider_opened(self, spider):
