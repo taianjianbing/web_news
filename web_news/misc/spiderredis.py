@@ -42,7 +42,6 @@ class SpiderRedis(CrawlSpider):
         return spider
 
     def _requests_to_follow(self, response):
-        return
         links = self.filter.bool_fllow(response, self.rules)
         if len(links) > 0:
             for link in links:
