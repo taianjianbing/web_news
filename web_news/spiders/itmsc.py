@@ -26,9 +26,6 @@ class itmscSpider(SpiderRedis):
         Rule(LinkExtractor(allow=r'view-\d+-\d+.html'), callback='parse_item', follow=False, process_links=process_links),
         Rule(LinkExtractor(allow=r'list(-\d+)+'), follow=True),
     )
-    custom_settings = {
-        'CLOSESPIDER_TIMEOUT': 3600,
-    }
     def gettitle(self, response):
         title = ''
         for i in response.xpath('//div[@class="cc_l"]/descendant-or-self::div[@class="arc_h1"]/descendant-or-self::text()').extract():

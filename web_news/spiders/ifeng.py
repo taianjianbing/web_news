@@ -30,9 +30,6 @@ class IfengSpider(SpiderRedis):
     allowed_domains = ['news.ifeng.com', 'tech.ifeng.com', 'finance.ifeng.com']
     start_urls = [ 'http://www.ifeng.com/']
     website = u'凤凰网'
-    custom_settings = {
-        'CLOSESPIDER_TIMEOUT':3600,
-    }
     rules = (
         Rule(LinkExtractor(allow=r'\d{8}/\d+_\d+.shtml'), callback='parse_item', follow=False, process_links=process_links),
         Rule(LinkExtractor(allow=r'ifeng'), follow=True),

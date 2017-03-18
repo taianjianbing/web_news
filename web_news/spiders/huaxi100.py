@@ -14,9 +14,6 @@ class Huaxi100Spider(PureSpiderRedis):
     allowed_domains = ['www.huaxi100.com', 'news.huaxi100.com']
     start_urls = ['http://www.huaxi100.com/util/portal_interface.php?a=getNews&page=1']
     website = u'华西都市报'
-    custom_settings = {
-        'CLOSESPIDER_TIMEOUT':3600,
-    }
     def parse(self, response):
         data = json.loads(response.text[1:-1])
         datalist = data['data']

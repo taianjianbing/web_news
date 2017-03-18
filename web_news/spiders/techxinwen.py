@@ -31,9 +31,6 @@ class TechxinwenSpider(SpiderRedis):
     allowed_domains = ['www.techxinwen.com']
     start_urls = ['http://www.techxinwen.com/']
     website = u'科技资讯'
-    custom_settings = {
-        'CLOSESPIDER_TIMEOUT': 3600,
-    }
     rules = (
         Rule(LinkExtractor(allow=r'show-\d+-\d+-\d+.html'), callback='parse_item', follow=False, process_links=process_links),
         Rule(LinkExtractor(allow=r'list-\d+-\d+.html'), follow=True),

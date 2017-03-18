@@ -18,9 +18,6 @@ class QiannanSpider(SpiderForum):
         'http://www.daguizx.com/qiannan/1',
     )
 
-    custom_settings = {
-        'CLOSESPIDER_TIMEOUT': 3600,
-    }
 
     def parse_each_node(self, response):
         base_url = response.xpath('//base/@href').extract_first()

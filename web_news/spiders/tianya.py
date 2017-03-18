@@ -17,10 +17,6 @@ class TianyaSpider(SpiderForum):
     start_urls = (
         'http://bbs.tianya.cn/m/block.jsp',
     )
-    custom_settings = {
-        # 'CONCURRENT_REQUESTS_PER_IP':10,
-        'CLOSESPIDER_TIMEOUT': 3600,
-    }
     watch = ['b_minsheng',
              # 'b_yule',
              'b_caijing',

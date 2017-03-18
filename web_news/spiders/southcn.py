@@ -29,9 +29,6 @@ class SouthcnSpider(SpiderRedis):
         Rule(LinkExtractor(allow=r'201\d-\d+/\d+/content_\d+.htm'), callback='parse_item', follow=False),
         Rule(LinkExtractor(allow=r'southcn'), follow=True),
     )
-    custom_settings = {
-        'CLOSESPIDER_TIMEOUT': 3600,
-    }
     def gettitle(self, response):
         title = ''
         for i in response.xpath('//h2[@id="article_title"]/descendant-or-self::text()').extract():

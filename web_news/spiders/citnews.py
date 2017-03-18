@@ -21,9 +21,6 @@ class CitnewsSpider(SpiderRedis):
         Rule(LinkExtractor(allow=r'201\d+/\d+'), callback='parse_item', follow=False),
         Rule(LinkExtractor(allow=r'citnews'), follow=True),
     )
-    custom_settings = {
-        'CLOSESPIDER_TIMEOUT':3600,
-    }
     def parse_item(self, response):
         l = ItemLoader(item=SpiderItem(), response=response)
         try:
