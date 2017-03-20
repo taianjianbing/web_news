@@ -21,6 +21,7 @@ class LogStatsDIY(object):
         # o = super(LogStatsDIY, cls).from_crawler(crawler)
         o = cls(crawler.stats)
         o.mongo = MongoDBPipeline.from_crawler(crawler)
+        o.db = o.mongo.db['LogStatsDIY']
         crawler.signals.connect(o.spider_opened, signal=signals.spider_opened)
         crawler.signals.connect(o.spider_closed, signal=signals.spider_closed)
         return o
@@ -50,9 +51,8 @@ class LogStatsDIY(object):
         item['_stats'] = self.stats._stats
         logger.debug(item)
         # logger.info(msg, log_args, extra={'spider': spider})
-        self.mongo.db['LogStatsDIY'].update({'name': item['name']}, {'$set': dict(item)}, True,
+        self.db.update({'name': item['name']}, {'$set': dict(item)}, True,
                                             True)
-
     def spider_closed(self, spider, reason):
         if self.task and self.task.running:
             self.task.stop()
