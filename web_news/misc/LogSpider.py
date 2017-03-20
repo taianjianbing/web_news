@@ -1,6 +1,7 @@
 import logging
 import time
-
+import datetime
+import json
 from scrapy import signals
 from twisted.internet import task
 
@@ -8,6 +9,11 @@ from web_news.pipelines import MongoDBPipeline
 
 logger = logging.getLogger(__name__)
 
+def date_handler(obj):
+    if hasattr(obj, 'isoformat'):
+        return obj.isoformat()
+    else:
+        raise TypeError
 
 class LogStatsDIY(object):
     def __init__(self, stats, interval=60.0):
@@ -48,7 +54,7 @@ class LogStatsDIY(object):
             pass
         item['active_date'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
         item.update(log_args)
-        item['_stats'] = self.stats._stats
+        item['_stats'] = json.dumps(self.stats._stats,default=date_handler)
         logger.debug(item)
         # logger.info(msg, log_args, extra={'spider': spider})
         self.db.update({'name': item['name']}, {'$set': dict(item)}, True,
