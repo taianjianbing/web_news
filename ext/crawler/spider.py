@@ -50,13 +50,13 @@ def parse_content(html_data):
         item['date'] = '1970-01-01 00:00:00'
     item['content'] = ''.join(response.xpath('//div[@id="Cnt-Main-Article-QQ"]/descendant-or-self::p/text()'))
     item['content'] = ''.join([i.strip() for i in item['content'].split()])
-    item['crawl_date'] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
     return item
 
 def store_item(item):
     item = dict(item)
     item['collection_name'] = 'qq'
     item['date'] = item['date'][:10] if item.get('date')!=None else ''
+    item['crawl_date'] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
     ret = db.find(item)
     if ret: return ret
     db.update(item)
@@ -91,7 +91,6 @@ def fetch_each_content(request):
             item['website'] = u'腾讯网'
             print 'finish url: %s'%request.get_full_url()
             return store_item(item) and False
-
         item['url'] = request.get_full_url()
         item['website'] = u'腾讯网'
         # with open(request.get_full_url().split('/')[-1], 'w') as f:
@@ -99,6 +98,7 @@ def fetch_each_content(request):
         print 'finish url: %s'%request.get_full_url()
         return store_item(item)
     except Exception as e:
+        print e
         return  False
 
 def fetch_each_page(request):
@@ -156,7 +156,7 @@ if __name__ == '__main__':
     # site = sys.argv[1]
     site = ['news', 'finance', 'tech']
     # 每天只爬取昨天的新闻
-    date = datetime.date.today()+datetime.timedelta(-1)
+    date = datetime.date.today()
     cnt = 0
     flag = True
     while  flag:
