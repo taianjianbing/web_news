@@ -60,8 +60,8 @@ class TianyaSpider(SpiderForum):
 
         iteminfo = {}
         iteminfo['url'] = response.url
-        iteminfo['view_num'] = response.xpath('//i[@class="iconfont icon-view"]/text()').extract_first().strip()
-        iteminfo['reply_num'] = response.xpath('//i[@class="iconfont icon-reply"]/text()').extract_first().strip()
+        iteminfo['view_num'] = int(response.xpath('//i[@class="iconfont icon-view"]/text()').extract_first().strip())
+        iteminfo['reply_num'] = int(response.xpath('//i[@class="iconfont icon-reply"]/text()').extract_first().strip())
         iteminfo['title'] = response.xpath('//h1/text()').extract_first()
         try:
             iteminfo['content'] = ''.join(response.xpath('//div[@class="bd"]')[0].xpath('descendant-or-self::text()').extract())
