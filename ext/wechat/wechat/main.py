@@ -12,7 +12,7 @@ from db import MongoDb
 from pymongo import MongoClient
 from hashlib import md5
 
-db = MongoDb(mongo_db='web_news', mongo_username='', mongo_password='', mongo_collection='news',
+db = MongoDb(mongo_db='web_news', mongo_username='uestc', mongo_password='mongoDB', mongo_collection='news',
              mongo_ip=['10.2.11.231', '10.2.11.230'], mongo_port=27017)
 
 
@@ -98,7 +98,9 @@ def crawl(biz, url, headers):
 
 
 def main():
-    dbkey = MongoClient(host='10.2.11.234', port=27017)['wechatkeys']['wechatkeys']
+    db = MongoClient(host='10.2.11.234', port=27017)['web_news']
+    db.authenticate('uestc','mongoDB')
+    dbkey = db['wechatkeys']
     for i in dbkey.find():
         biz = i['biz']
         headers = i['headers']

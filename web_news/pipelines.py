@@ -22,7 +22,7 @@ class MongoDBPipeline(object):
         self.mongo_collection = mongo_collection
         self.client = MongoClient(host=self.mongo_ip, port=self.mongo_port)
         self.db = self.client[self.mongo_db]
-
+        self.db.authenticate(mongo_username, mongo_password)
     @classmethod
     def from_crawler(cls, crawler):
         return cls(

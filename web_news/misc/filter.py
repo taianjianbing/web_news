@@ -61,6 +61,7 @@ class Filter(object):
         mongo_port = crawler.settings.get('MONGO_PORT')
         client = MongoClient(mongo_ip, mongo_port)
         db = client[mongo_db]
+        db.authenticate(mongo_username,mongo_password)
         col = db[mongo_collection]
         return cls(client=client, db=db, col=col, name=name)
 

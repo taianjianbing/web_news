@@ -39,7 +39,7 @@ class MongoDb(DB):
         self.mongo_collection = mongo_collection
         self.client = MongoClient(host=self.mongo_ip, port=self.mongo_port)
         self.db = self.client[self.mongo_db]
-
+        self.db.authenticate(mongo_username,mongo_password)
     def find(self, item):
         return self.db[self.mongo_collection].count({'md5': item['md5'], 'date': item['date']}) > 0
 

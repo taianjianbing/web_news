@@ -39,7 +39,7 @@ header = {
 }
 
 urlTemplate = 'http://roll.%(site)s.qq.com/interface/roll.php?%(random)s&cata=&site=%(site)s&date=%(date)s&page=%(page)s&mode=1&of=json'
-db = MongoDb(mongo_db='web_news', mongo_username='', mongo_password='',mongo_collection='news', mongo_ip=['10.2.11.231', '10.2.11.230'], mongo_port=27017)
+db = MongoDb(mongo_db='web_news', mongo_username='uestc', mongo_password='mongoDB',mongo_collection='news', mongo_ip=['10.2.11.231', '10.2.11.230'], mongo_port=27017)
 def parse_content(html_data):
     item = Item()
     response = etree.HTML(html_data)
